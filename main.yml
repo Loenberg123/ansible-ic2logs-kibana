@@ -1,0 +1,24 @@
+---
+- hosts: all
+  vars_files:
+      - vars/fb-beta.yml
+      - vars/fb-release.yml
+
+  tasks:
+   - name: Update apt cache if too old
+     apt:
+       update_cache=yes cache_valid_time=14400
+
+   - include: tasks/fb-release.yml
+     when: "'Filebeat-release' in group_names"
+
+   - include: tasks/fb-beta.yml
+     when: "'Filebeat-beta' in group_names"
+
+  handlers:
+   - name: restart filebeat
+     service:
+        name: filebeat
+        enabled: yes
+        state: restarted
+...

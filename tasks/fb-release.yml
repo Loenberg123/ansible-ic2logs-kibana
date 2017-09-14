@@ -1,0 +1,12 @@
+---
+- name: Install Filebeat
+  apt:
+    deb: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-5.6.0-amd64.deb
+
+- name: Configure Filebeat to send Icinga logs
+  template:
+     src: templates/filebeat-rel.yml.j2
+     dest: /etc/filebeat/filebeat.yml
+  notify:
+     - restart filebeat
+...
