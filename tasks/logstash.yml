@@ -1,0 +1,22 @@
+---
+- name: Configure logstash with icinga filter
+  template:
+    src: templates/11-icinga-filter.conf.j2
+    dest: /etc/logstash/conf.d/11-icinga-filter.conf
+  when: "'Logstash' in group_names"
+
+- name: Icinga pattern - Create directory
+  file:
+    path: /etc/logstash/patterns
+    state: directory
+  when: "'Logstash' in group_names"
+
+- name: Icinga pattern - Clone repo
+  git:
+    repo: https://github.com/Icinga/logstash-grok-pattern.git
+    dest: /etc/logstash/patterns/icinga
+    clone: yes
+  notify:
+    - restart logstash
+  when: "'Logstash' in group_names"
+...
